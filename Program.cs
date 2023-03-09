@@ -1,136 +1,225 @@
-﻿// Задача 41: Пользователь вводит с клавиатуры M чисел. Посчитайте, сколько чисел больше 0 ввёл пользователь.
+﻿using System;
+// Задача 47. Задайте двумерный массив размером m×n, заполненный случайными вещественными числами.
 
-// 0, 7, 8, -2, -2 -> 2
-// 1, -7, 567, 89, 223-> 3
+// m = 3, n = 4.
+// 0,5 7 -2 -0,2
+// 1 -3,3 8 -9,9
+// 8 7,8 -7,1 9
 
-
-void countingInputNumbers(int amountNumbers)
+int[,] Get2DArray(int rows, int columns, int minNumber, int maxNumber)
 {
-    int number = 0;
-    int count = 0;
-    int i = 0;
-
-    while (i < amountNumbers)
+    Random random = new Random();
+    int[,] array = new int[rows, columns];
+    for (int i = 0; i < rows; i++)
     {
-        Console.WriteLine("Input number:");
-        string input = Console.ReadLine();
-        try
+        for (int j = 0; j < columns; j++)
         {
-            number = Convert.ToInt32(input);
+            array[i, j] = random.Next(minNumber, maxNumber);
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            continue;
-        }
+    }
 
-        if (number > 0)
+
+    return array;
+}
+
+
+void ShowArray(int[,] array)
+{
+    for (int i = 0; i < array.GetLength(0); i++)
+    {
+        for (int j = 0; j < array.GetLength(1); j++)
         {
-            count += 1;
-            i++;
+            Console.Write(array[i, j] + " ");
+        }
+        Console.WriteLine();
+    }
+}
+
+
+// Задача 50. Напишите программу, которая на вход принимает индексы элемента в двумерном массиве, 
+// и возвращает значение этого элемента или же указание, что такого элемента нет.
+// Например, задан массив:
+
+// 1 4 7 2
+// 5 9 2 3
+// 8 4 2 4
+
+// 1,1 -> 9
+// 1,7 -> элемента с данными индексами в массиве нет
+
+int GetIndex(int[,] array, (int, int) index)
+{
+    try
+    {
+        return array[index.Item1, index.Item2];
+    }
+    catch
+    {
+        Console.WriteLine("Элемента с данными индексами в массиве нет");
+        return 0;
+    }
+
+}
+
+
+// Задача 52. Задайте двумерный массив из целых чисел. Найдите среднее арифметическое элементов в каждом столбце.
+
+// Например, задан массив:
+// 1 4 7 2
+// 5 9 2 3
+// 8 4 2 4
+// Среднее арифметическое каждого столбца: 4,6; 5,6; 3,6; 3.
+
+string GetAverageNumberOfColumn(int[,] array)
+{
+    double sum = 0;
+    var avarageNumbersList = new List<double>();
+    for (int i = 0; i < array.GetLongLength(1); i++)
+    {
+        for (int j = 0; j < array.GetLength(0); j++)
+        {
+            sum += array[j, i];
+        }
+        avarageNumbersList.Add(Math.Round(sum / array.GetLength(0), 1, MidpointRounding.ToZero));
+        sum = 0;
+    }
+    return string.Join("; ", avarageNumbersList);
+}
+
+
+// Необязательная к выполнению задача (не будет влиять на итоговую оценку ДЗ)
+// Дополнительная задача (задача со звёздочкой): Задайте двумерный массив из целых чисел. Определите, 
+// есть столбец в массиве, сумма которого, больше суммы элементов расположенных в четырех "углах" двумерного массива.
+
+// Например, задан массив:
+// 4 4 7 5
+// 4 3 5 3
+// 8 1 6 8 -> нет
+
+// 2 4 7 2
+// 4 3 5 3
+// 2 1 6 2 -> да
+
+string IsColumn(int[,] array)
+{
+    int sumCornerNumbers = 0;
+    int sumNumbersInColumn = 0;
+    for (int i = 0; i < array.GetLength(0); i++)
+    {
+        sumCornerNumbers += array[i, 0] + array[i, array.GetLength(1) - 1];
+    }
+    for (int i = 0; i < array.GetLength(1); i++)
+    {
+        for (int j = 0; j < array.GetLength(0); j++)
+        {
+            sumNumbersInColumn += array[j, i];
+        }
+        if (sumCornerNumbers < sumNumbersInColumn)
+        {
+            return "yes";
         }
         else
         {
-            i++;
+            sumNumbersInColumn = 0;
         }
+
     }
-    Console.WriteLine($"Positive number = {count}");
+    return "no";
+
 }
-
-
-// Задача 43: Напишите программу, которая найдёт точку пересечения двух прямых, заданных уравнениями y = k1 * x + b1, y = k2 * x + b2; 
-// значения b1, k1, b2 и k2 задаются пользователем.
-
-// b1 = 2, k1 = 5, b2 = 4, k2 = 9 -> (-0,5; -0,5)
-
-
-Tuple<double, double> getCrossPoint(double b1, double k1, double b2, double k2)
-{
-    double x = (b2 - b1) / (k1 - k2);
-    double y = x;
-
-    return Tuple.Create(x, y);
-}
-
 
 
 // Необязательная к выполнению задача (не будет влиять на итоговую оценку ДЗ)
-// Дополнительная задача (задача со звёздочкой): Напишите программу, которая задаёт массив из n элементов, 
-// которые необходимо заполнить случайными значениями и сдвинуть элементы массива влево, или вправо на 1 позицию.
+// Дополнительная задача 2 (задача со звёздочкой): Вывести первые n строк треугольника Паскаля. 
+// Реализовать вывод в виде равнобедренного треугольника.
 
-// [8, 5, 1, 7, 0] - [5, 1, 7, 0, 8] - сдвиг влево
+// N = 7 -> https://ibb.co/yWPZbG7
 
-// [8, 5, 1, 7, 0] - [0, 8, 5, 1, 7] - сдвиг вправо
-
-int[] getRandomArray(int min, int max, int size)
+int GetFactorial(int number)
 {
-    int[] resultArray = new int[size];
-    Random random = new Random();
-    for (int i = 0; i < resultArray.Length; i++)
+    if (number == 0)
     {
-
-        resultArray[i] = random.Next(min, max);
-    }
-    return resultArray;
-}
-
-int[] moveAraay(int[] array, string direction)
-{
-    int[] resultArray = new int[array.Length];
-    if (direction == "left")
-    {
-        for (int i = 1; i < array.Length; i++)
-        {
-            resultArray[i - 1] = array[i];
-        }
-        resultArray[array.Length - 1] = array[0];
-
-    }
-    else if (direction == "right")
-    {
-        for (int i = 0; i < array.Length - 1; i++)
-        {
-            resultArray[i + 1] = array[i];
-        }
-        resultArray[0] = array[array.Length - 1];
-
+        return 1;
     }
     else
     {
-        Console.WriteLine("Error. You can choose left or right");
+        return number * GetFactorial(number - 1);
     }
-    return resultArray;
 }
 
 
-// Необязательная к выполнению задача (не будет влиять на итоговую оценку ДЗ)
-// Дополнительная задача 2 (задача со звёздочкой): Напишите программу, которая задаёт массив из n элементов, 
-// которые необходимо заполнить случайными значениями и определить существует ли пара соседних элементов с одинаковыми значениями, 
-// при наличии такого элемента заменить его на уникакальное значение.
-
-// [1,2,3,3] -> [1,2,3,4]
-
-int[] getUniqValueArray(int[] array, int min, int max)
+List<object> GetRowInPascalTriangle(int row, int triangleHight)
 {
-    int[] resultArray = array;
-    Random random = new Random();
-    if (array.Length > 2)
+    List<object> pascalTriangleRow = new List<object>();
+    for (int j = 0; j < triangleHight - row; j++)
     {
-        for (int i = 1; i < array.Length - 1; i++)
+        pascalTriangleRow.Add(" ");
+    }
+    int rowLenght = row + 1;
+    int number = 0;
+    for (int i = 0; i < rowLenght; i++)
+    {
+        number = GetFactorial(row) / (GetFactorial(i) * GetFactorial(row - i));
+        pascalTriangleRow.Add(number);
+        if (i != rowLenght - 1)
         {
-            while ((resultArray[i] == resultArray[i - 1]) || (resultArray[i] == resultArray[i + 1]))
-            {
-                resultArray[i] = random.Next(min, max);
-            }
+            pascalTriangleRow.Add(" ");
         }
     }
-    else if (array.Length == 2)
+    for (int n = 0; n < triangleHight - row; n++)
     {
-        while (resultArray[0] == resultArray[1])
-        {
-            resultArray[0] = random.Next(min, max);
-        }
+        pascalTriangleRow.Add(" ");
     }
-    return resultArray;
+    return pascalTriangleRow;
 
 }
+
+
+void PascalTriangle(int number)
+{
+    for (int i = 0; i < number; i++)
+    {
+        List<object> row = GetRowInPascalTriangle(i, number);
+        for (int j = 0; j < number * 2; j++)
+        {
+            Console.Write(Convert.ToString(row[j]));
+        }
+        Console.WriteLine();
+    }
+}
+
+
+void Test()
+{
+    Console.WriteLine("Задача 47");
+    ShowArray(Get2DArray(3, 4, 0, 9));
+
+    Console.WriteLine("Задача 50");
+    int[,] arrayEx50Ex52 = {{1, 4, 7, 2},
+                        {5, 9, 2, 3},
+                        {8, 4, 2, 4}};
+    (int, int) index1 = (1, 1);
+    (int, int) index2 = (1, 7);
+
+    Console.WriteLine($"Index = {index1}  {GetIndex(arrayEx50Ex52, index1)}");
+    Console.WriteLine($"Index = {index2}  {GetIndex(arrayEx50Ex52, index2)}");
+
+    Console.WriteLine("Задача 52");
+    Console.WriteLine(GetAverageNumberOfColumn(arrayEx50Ex52));
+
+    Console.WriteLine("Дополнительная задача 1");
+    int[,] array1 = {{4, 4, 7, 5},
+                     {4, 3, 5, 3},
+                     {8, 1, 6, 8}};
+
+    int[,] array2 = {{2, 4, 7, 2},
+                     {4, 3, 5, 3},
+                     {2, 1, 6, 2}};
+    Console.WriteLine(IsColumn(array1));
+    Console.WriteLine(IsColumn(array2));
+
+    Console.WriteLine("Дополнительная задача 2");
+    PascalTriangle(7);
+}
+
+Test();
